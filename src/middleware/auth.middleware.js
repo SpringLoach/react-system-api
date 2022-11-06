@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const errorTypes = require("../constants/error-types");
 const { PUBLIC_KEY } = require("../app/config");
 const userService = require("../service/user.service");
+const blogContorllService = require("../service/blog-right.service");
 const md5password = require("../utils/password-handle");
 
 const verifyLogin = async (ctx, next) => {
@@ -57,7 +58,23 @@ const verifyAuth = async (ctx, next) => {
   }
 };
 
+const verifyBlog = async (ctx, next) => {
+  // 获取参数
+  const { name } = ctx.user;
+  // 查询数据
+  const result = await blogContorllService.getBlog();
+  console.log(result.name, result.name.split(",").includes(name));
+  // 返回数据
+  if (result.name.split(",").includes(name)) {
+    await next();
+  } else {
+    const error = new Error(errorTypes.USER_REQUIRE_RIGHT);
+    ctx.app.emit("error", error, ctx);
+  }
+};
+
 module.exports = {
   verifyLogin,
   verifyAuth,
+  verifyBlog,
 };

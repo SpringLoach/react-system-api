@@ -24,6 +24,10 @@ const errorHandler = (error, ctx) => {
       status = 401; // 参数错误
       message = "无效的token~";
       break;
+    case errorTypes.USER_REQUIRE_RIGHT:
+      status = 403; // 参数错误
+      message = "当前用户没有该权限";
+      break;
     default:
       status = 404;
       message = "NOT FOUND";
